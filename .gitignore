@@ -1,0 +1,12 @@
+# C# / .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.exe
+*.pdb
+
+# Общий мусор
+Thumbs.db
+*.log
