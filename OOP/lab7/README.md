@@ -30,3 +30,20 @@
   - `Delete` — удаление выделенных;
   - кнопки цвета и `ColorDialog` — перекрашивание выделенных фигур.  
   При закрытии формы хранилище автоматически сохраняется в файл, при запуске — загружается обратно, восстанавливая группы и вложенные в них элементы.
+
+## Скриншоты
+
+Группа из красных кругов.
+<img width="1324" height="721" alt="image" src="https://github.com/user-attachments/assets/ce5bff99-58a5-40e7-bd81-713d27a1fa3b" />
+
+Создаем еще 2 группы из черных кругов и синих квадратов.
+<img width="1311" height="720" alt="image" src="https://github.com/user-attachments/assets/2a6718b9-8863-4c00-9adb-27923583fbad" />
+
+Объединяем две прошлые группы в одну.
+<img width="1322" height="709" alt="image" src="https://github.com/user-attachments/assets/4d5964ce-03e4-4fb3-8171-ed8b8bca8a6a" />
+
+Далее при выборе группы — все элементы в ней ведут себя как единое целое. В качестве примера поменяем цвет у большой группы — он изменится у всех объектов разом.
+<img width="1309" height="706" alt="image" src="https://github.com/user-attachments/assets/17ed8008-6ac7-489d-83f3-3428766375ba" />
+
+
+
