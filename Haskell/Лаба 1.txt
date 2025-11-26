@@ -1,0 +1,150 @@
+module Huggie where
+import Data.Char
+
+
+sumMy :: Num a => [a] -> a
+sumMy [] = 0
+sumMy x = head x + sumMy(tail x)
+
+productMy :: Num a => [a] -> a
+productMy [] = 1
+productMy x = head x * productMy(tail x)
+
+maxMy :: Ord a => a -> a -> a
+maxMy x y = if x > y then x else y
+
+minMy :: Ord a => a -> a -> a
+minMy x y = if x > y then y else x
+
+maximumMy :: Ord a => [a] -> a
+maximumMy [x] = x
+maximumMy  (x:y:xs) = maximumMy ((if x >= y then x else y):xs)
+
+minimumMy :: Ord a => [a] -> a
+minimumMy [x] = x
+minimumMy  (x:y:xs) = minimumMy ((if x >= y then y else x):xs)
+
+evenMy :: Integral a => a -> Bool
+evenMy x = if mod x 2 == 0 then True else False
+
+oddMy:: Integral a => a -> Bool
+oddMy x = if mod x 2 == 0 then False else True
+
+gcdMy :: Integral a => a -> a -> a
+gcdMy a 0 = a
+gcdMy a b = gcd b (mod a b)
+
+lcmMy :: Integral a => a -> a -> a
+lcmMy a b = div (a * b) (gcdMy a b)
+
+powMy :: (Num a, Integral b) => a -> b -> a
+powMy _ 0 = 1
+powMy x y = x * powMy x (y-1)
+
+fact :: Integral a => a -> a
+fact 0 = 1
+fact x = x * fact(x-1)
+
+fibMy :: Integer -> Integer
+fibMy 0 = 0
+fibMy 1 = 1
+fibMy n = fibMy(n-1) + fibMy(n-2)
+
+andMy :: [Bool] -> Bool
+andMy [] = True
+andMy x = head x && andMy (tail x)
+
+orMy :: [Bool] -> Bool
+orMy [] = False
+orMy x = head x || orMy (tail x)
+
+headMy :: [a] -> a
+headMy(x:xs) = x
+
+tailMy :: [a] -> [a]
+tailMy(x:xs) = xs
+
+lastMy :: [a] -> a
+lastMy [x] = x
+lastMy(x:xs) = lastMy xs
+
+initMy :: [a] -> [a]
+initMy [x] = []
+initMy (x:xs) = x : initMy xs
+
+lengthMy :: [a] -> Int
+lengthMy [] = 0
+lengthMy (x:xs) = 1 + lengthMy (xs)
+
+getMy :: [a] -> Int -> a
+getMy [] _ = error "No such index"
+getMy x i = if lengthMy(init x) == i then (last x) else getMy (init x) i
+
+uppendMy :: [a] -> [a] -> [a]
+uppendMy [] y = y
+uppendMy x y = uppendMy (init x) (last x:y)
+
+concatMy :: [[a]] -> [a]
+concatMy [] = []
+concatMy (x:xs) =uppendMy x (concatMy xs)
+
+takeMy:: Int -> [a] -> [a]
+takeMy 0 _ = []
+takeMy i (x:xs) =if length(x:xs) > i then x : takeMy (i-1) xs else x:xs
+
+dropMy :: Int -> [a] -> [a]
+dropMy 0 x = x
+dropMy i x = if length(x) >= i then dropMy (i-1) (tail x) else []
+
+reverseMy :: [a] -> [a]
+reverseMy [] = []
+reverseMy x = (last x) : (reverseMy (init x))
+
+elemMy :: Eq a => a -> [a] -> Bool
+elemMy _ [] = False
+elemMy i (x:xs) = if i == x then True else elemMy i xs
+
+replicateMy :: Int -> a -> [a]
+replicateMy 0 x = []
+replicateMy i x = [x] ++ replicateMy (i-1) x
+
+lookupMy :: Eq a => a -> b -> [(a, b)] -> b
+lookupMy xa xb [] = xb
+lookupMy xa xb (c:cs) = if fst c == xa then snd c else lookupMy xa xb (cs)
+
+substrMy :: [a] -> Int -> Int -> [a]
+substrMy x a b = take (b-a + 1) (drop (a) x)
+
+strReplaceMy :: Eq a => [a] -> [a] -> [a] -> [a]
+strReplaceMy _ _ [] = []  
+strReplaceMy from to xs
+    | take len xs == from = to ++ strReplaceMy from to (drop len xs)
+    | otherwise = head xs : strReplaceMy from to (tail xs)
+    where
+        len = length from  -- длина первого списка
+
+elemIndices :: Eq a => a -> [a] -> [Int]
+elemIndices _ [] = []
+elemIndices a xs = elemIndicesHelper a xs 0
+-- Вспомогательная рекурсивная функция для поиска индексов элемента
+elemIndicesHelper :: Eq a => a -> [a] -> Int -> [Int]
+elemIndicesHelper _ [] _ = []
+elemIndicesHelper y (x:xs) index
+    | x == y = index : elemIndicesHelper y xs (index + 1)
+    | otherwise = elemIndicesHelper y xs (index + 1)
+
+strPosMy :: Eq a => [a] -> [a] -> [Int]
+strPosMy _ [] = []
+strPosMy [] _ = error "Inf list"
+strPosMy subList xs = strPosHelper subList xs 0 
+-- Вспомогательная рекурсивная функция для поиска индексов начала вхождений списка
+strPosHelper :: Eq a => [a] -> [a] -> Int -> [Int]
+strPosHelper subList xs index
+    | length xs < length subList = []
+    | take (length subList) xs == subList = index : strPosHelper subList (drop 1 xs) (index + 1)  
+    | otherwise = strPosHelper subList (drop 1 xs) (index + 1) 
+
+strRotateMy :: [a] -> Int -> [a]
+strRotateMy [] _ = []
+strRotateMy xs 0 = xs
+strRotateMy xs i = strRotateMy (last xs : init xs) (i-1)

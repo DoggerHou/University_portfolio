@@ -1,0 +1,242 @@
+module Huggie where
+import Data.Char
+import System.IO
+import Data.List (sort, group, sortBy)
+
+----------------------------------------------------------------------------------------------------------------------------
+------------------------------БЕСКОНЕЧНЫЕ СПИСКИ----------------------------------------------------------------------------
+
+--iterate :: (a -> a) -> a -> [a]
+--создает бесконечный список такого вида : f(a), f(f(a)), f(f(f(a)))...; где f - первый аргумент (функция), a - второй аргумент
+
+--repeat :: a -> [a]
+--Создает бесконечный список вида: [а, а, а, а, ...]
+
+--cycle :: [a] -> [a]
+--создает бесконечный список вида: [a,a,a,a...] где [a] - переданный в функцию список
+
+
+
+--Создаем бесконечную псевдослучайную последовательность
+pseudoRandomMy :: Integer -> [Integer]
+pseudoRandomMy seed = iterate (\x -> (148835535 * x + 23535324553) `mod` 2^32 -1) seed
+
+--Последовательность char вида : ['1','2','3','4','5','6','7','8','9','1','0','1','1','1','2'...]
+inf1 :: [Char]
+inf1 = concatMap show [1..]
+
+--Последовательность char вида : ['1','0','1','0','0','1','0','0','0',…]
+inf2 :: [Char]
+inf2 = concatMap show ( iterate (*10) 10 )
+
+
+--Бесконечный список чисел, у которых сумма чисел равна их произведению
+optInf1 :: [Int]
+optInf1 = [x | x <- [1..], sumMy x == productMy x] where
+	sumMy :: Int -> Int					-- Сумма цифр
+	sumMy 0 = 0
+	sumMy n = n `mod` 10 + sumMy (n `div` 10)
+
+	productMy :: Int -> Int					--Произведение цифр
+	productMy 0 = 1
+	productMy n = n `mod` 10 * productMy (n `div` 10)
+
+
+--Бесконечный список степеней двойки, у которых сумма цифр нечетная
+optInf2 :: [Int]
+optInf2 = [x | x <- iterate (*2) 2, odd $ sumMy x] where 
+	sumMy :: Int -> Int					-- Сумма цифр
+	sumMy 0 = 0
+	sumMy n = n `mod` 10 + sumMy (n `div` 10)
+
+
+--Бесконечный список подсписков чисел, вида [[x^1, x^2...], [(x+1)^1, (x+1)^2...]...]
+optInf3 :: [[Int]]
+optInf3 = map (\i -> map (\j -> i^j) [1..10]) [1..10]
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+------------------------------ВВОД-ВЫВОД------------------------------------------------------------------------------------
+--putChar :: Char -> IO ()
+--принимает char и возвращает действие ввода-вывода, которое напечатает его на терминале
+
+--putStr :: String -> IO ()
+--определена рекурсивно с помощью функции putChar, записывает строку в стандартный вывод
+
+--putStrLn :: String -> IO ()
+--записывает строку и символ новой строки в стандартный вывод
+
+--print :: Show a => a -> IO ()
+--Функция. Выводит значение любого пригодного для печати типа на стандартное устройство вывода
+
+--getChar :: IO Char
+--читает символ из стандартного ввода
+
+--getLine :: IO String
+--читает строку из стандартного ввода
+
+--readFile :: FilePath -> IO String
+--считывает файл, логично
+
+--writeFile :: FilePath -> String -> IO ()
+--записывает свой второй аргумент(строку), в файл(первый аргумент)
+
+--interact :: (String -> String) -> IO ()
+--Прерывание для строковых методов (?)
+
+main :: IO ()
+checkBrackets :: String -> Bool
+checkBrackets input = checkBrackets' input []
+
+-- Вспомогательная рекурсивная функция с использованием стека
+checkBrackets' :: String -> [Char] -> Bool
+checkBrackets' [] stack = null stack
+checkBrackets' (x:xs) stack
+  | isOpeningBracket x = checkBrackets' xs (x:stack)
+  | isClosingBracket x = case stack of
+                           []       -> False
+                           (y:ys) -> if isMatchingPair y x
+                                     then checkBrackets' xs ys
+                                     else False
+  | otherwise = checkBrackets' xs stack
+
+-- Проверка, является ли символ открывающей скобкой
+isOpeningBracket :: Char -> Bool
+isOpeningBracket c = c `elem` "({["
+
+-- Проверка, является ли символ закрывающей скобкой
+isClosingBracket :: Char -> Bool
+isClosingBracket c = c `elem` ")}]"
+
+-- Проверка, соответствуют ли открывающая и закрывающая скобки друг другу
+isMatchingPair :: Char -> Char -> Bool
+isMatchingPair '(' ')' = True
+isMatchingPair '{' '}' = True
+isMatchingPair '[' ']' = True
+isMatchingPair _ _     = False
+
+main = do
+	contents <- readFile "D:\\Haskell\\data.txt"
+	putStrLn $ if checkBrackets contents then "Everything is alright." else "Error, False answer"
+
+
+
+
+-- Функция для подсчета уникальных слов и их количества в тексте
+wordCount :: String -> [(String, Int)]
+wordCount text = sortBy (flip compare `on` snd) $ map (\word -> (head word, length word)) (group (sort (words text))) where 
+	on :: (b -> b -> c) -> (a -> b) -> a -> a -> c
+	on f_binary f_unary x y = f_binary (f_unary x) (f_unary y)
+main2 = do
+	contents <- readFile "D:\\Haskell\\input.txt"
+	writeFile "D:\\Haskell\\output.txt" (show $ wordCount contents)
+
+
+-- Функция выводящая отсортированные уникальные слова
+unicueWords :: String -> [(String, Int)]
+unicueWords text = filter (\i -> snd i == 1) $ map (\word -> (head word, length word)) (group (sort (words text))) where 
+	on :: (b -> b -> c) -> (a -> b) -> a -> a -> c
+	on f_binary f_unary x y = f_binary (f_unary x) (f_unary y)
+
+main3 = do
+	contents <- readFile "D:\\Haskell\\input.txt"
+	writeFile "D:\\Haskell\\output.txt" (show $ map (fst) (unicueWords contents))
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+------------------------------НЕТРИВИАЛЬНЫЕ ФУНКЦИИ-------------------------------------------------------------------------
+--Вставляет заданный элемент между всеми элементами списка
+intersperse :: a -> [a] -> [a]
+intersperse _ [] = []
+intersperse _ [x] = [x]					--Чтобы elem не вставлялся в конце списка
+intersperse elem (x:xs) = x : elem : intersperse elem xs
+
+
+--Разбивает строку(на самом деле список) на подсписки по заданному элементу(границы)
+explodeMy :: Eq a => a -> [a] -> [[a]]
+explodeMy _ [] = []					--Список пуст - значит, так надо(возвращаем пустой список дабы нормально сформировать подсписки)
+explodeMy elem list = explodeHelper list [] where	--Изначально acc пустой, ибо подсписки изначально пустые
+	explodeHelper [] acc = [acc]			--Если дошли до конца списка - возвращаем аккумулятор
+	explodeHelper (x:xs) acc
+		|x == elem = acc : explodeHelper xs []	--Дошли до разделителя - результируем acc и продолжаем дальше
+		|otherwise = explodeHelper xs (acc ++ [x]) --Иначе, добавляем текущий элемент в аккамулятор(текущий подсписок)
+
+
+--Разбивает список по заданному условию
+explodeBy :: (a -> Bool) -> [a] -> [([a],[a])]
+explodeBy _ [] = []
+explodeBy f xs = (takeWhile (not.f) xs, takeWhile f (dropWhile (not.f) xs)) : explodeBy f (dropWhile f (dropWhile (not.f) xs))
+
+
+-- Функция транспонирования матрицы
+transpose :: [[a]] -> [[a]]
+transpose ([]:_) = []
+transpose xss = map head xss : transpose (map tail xss)
+
+
+--Функция группировки подряд идущих элементов
+groupMy :: Eq a => [a] -> [[a]]
+groupMy [] = []
+groupMy (x:xs) = (x : takeWhile (== x) xs) : groupMy (dropWhile (== x) xs)
+
+
+-- Функция, которая ищет все префиксы ("abc" == ["","a","ab","abc"])
+initsMy :: [a] -> [[a]]
+initsMy xs = [take n xs | n <- [0..length xs]]
+
+
+-- Функция для поиска всех суффиксов
+tailsMy :: [a] -> [[a]]
+tailsMy xs = [drop n xs | n <- [0..length xs]]
+
+
+-- Функция для поиска всех инфиксов						--ВОЗМОЖНО ТАК НЕЛЬЗЯ!!!!!(МОЖНО!!!)
+infixesMy :: [a] -> [[a]]
+infixesMy xs = [] : [drop i (take j xs) | i <- [0..length xs], j <- [i  + 1..length xs]]
+
+
+
+-- Проверка на префикс
+isPrefixOfMy :: Eq a => [a] -> [a] -> Bool
+isPrefixOfMy x y = if x `elem` (initsMy y) then True else False
+
+
+--Проверка на суффкис
+isSuffixOfMy :: Eq a => [a] -> [a] -> Bool
+isSuffixOfMy x y = if x `elem` (tailsMy y) then True else False
+
+
+--Проверка на инфикс								--ВОЗМОЖНО ТАК НЕЛЬЗЯ!!!!!(МОЖНО!!!)
+isInfixOfMy :: Eq a => [a] -> [a] -> Bool
+isInfixOfMy x y = if x `elem` (infixesMy y) then True else False
+
+
+--Куммулятивные суммы постфиксов [1,2,2,4] == [9,8,6,4]				--Возможно первый элемент не берем
+cumSumPostfixMy :: Num a => [a] -> [a]
+cumSumPostfixMy xs = map sum (tailsMy xs)
+
+
+--Куммулятивные суммы всех префиксов
+cumSumPrefixMy :: Num a => [a] -> [a]
+cumSumPrefixMy xs = map sum (initsMy xs)
+
+
+--Список разниц между парами подряд идущих чисел
+diffMy :: [Int] -> [Int]
+diffMy xs = zipWith (-) (tail xs) (xs)
+
+--Сколько чисел в списке СТРОГО меньше каждого числа из списка
+lastFuncEver :: [Int] -> [Int]
+lastFuncEver xs = map (\x -> length $ filter (<x) xs) xs

@@ -1,0 +1,123 @@
+module Huggie where
+import Data.List (transpose)
+
+mapMy :: (a -> b) -> [a] -> [b]
+mapMy _ [] = []
+mapMy f (x:xs) = f x : mapMy f xs
+
+
+filterMy f [] = []
+filterMy f (x:xs) 
+	| f x       = x : filterMy f xs
+        | otherwise = filterMy f xs
+
+
+anyMy :: (a -> Bool) -> [a] -> Bool
+anyMy pred = or . map pred
+
+
+allMy :: (a -> Bool) -> [a] -> Bool
+allMy pred = and . map pred
+
+
+--Убираем глассные в строке
+deleteVowels :: String -> String
+deleteVowels = filter (`notElem` "eyuioaEYUIOA")
+
+
+--Убираем согласные в строкe
+deleteConsonants :: String -> String
+deleteConsonants = filter (`elem` "eyuioaEYUIOA")
+
+
+--Убираем числа в строке
+deleteDigits :: String -> String
+deleteDigits = filter (`notElem` ['0'..'9'])
+
+
+--Получаем строку из 1 символов каждой строки в списке
+getFirstsInList :: [String] -> String
+getFirstsInList = map head
+
+
+--Получаем строку из последних символов каждой строки в списке
+getLastsInList :: [[a]] -> [a]
+getLastsInList = map last
+
+
+--Получаем каждый "энный" элемент подсписка в списке
+getNthElements :: [[a]] -> Int -> [a]
+getNthElements listOfLists n = map (!! n) listOfLists where
+
+
+--Переворачиваем каждый подсписок + переворачиваем список
+reverseSublists :: [[a]] -> [[a]]
+reverseSublists listOfLists = reverse (map reverse listOfLists)
+
+
+--Применение различных функций к элементам в зависимости от условий
+mapIfMy :: (a -> Bool) -> (a -> b) -> (a -> b) -> [a] -> [b]
+mapIfMy _ _ _ [] = [] 					-- список пустой, значит, возвращаем пустой
+mapIfMy cond f1 f2 (x:xs)
+  | cond x = f1 x : mapIfMy cond f1 f2 xs 		-- Если условие(cond), то применяем f1
+  | otherwise = f2 x : mapIfMy cond f1 f2 xs 		-- Иначе применяем f2
+
+
+--Композиция функций (правая свертка)
+composeAllMy :: [a -> a] -> (a -> a)
+composeAllMy [] = id
+composeAllMy (x:xs) = (.) x (composeAllMy xs)
+
+
+--Применяем композицию функций к значению
+applyIterateMy :: [a -> a] -> a -> a
+applyIterateMy funcs x = composeAllMy funcs $ x
+
+
+--Возвращаем кортеж где fst True и snd False
+partition :: (a -> Bool) -> [a] -> ([a], [a])
+partition cond list = (filter cond list, filter (not . cond) list)
+
+--Количество предикатов, которые возвращают True
+countTruePredicate ::  [a -> Bool] -> a -> Int
+countTruePredicate predList x = length $ filter (\pred -> pred x) predList
+
+--Находим индексы тех элементов, для которых предикат вернет True
+findIndices :: (a -> Bool) -> [a] -> [Int]
+findIndices pred elemList = findIndicesHelper pred elemList 0 where
+	findIndicesHelper _ [] _ = []
+	findIndicesHelper pred (x:xs) index
+		|pred x = index : findIndicesHelper pred xs (index + 1)
+		|otherwise = findIndicesHelper pred xs (index + 1)
+
+--вызов fb fu x y вернет : fa(x) `fu` fa(y)
+on :: (b -> b -> c) -> (a -> b) -> a -> a -> c
+on f_binary f_unary x y = f_binary (f_unary x) (f_unary y)
+
+--Оставляе только те элементы, для которых верны ВСЕ предикаты
+filterMapAndMy :: [a -> Bool] -> [a] -> [a]
+filterMapAndMy predicates = filter (\x -> allMy (\p -> p x) predicates)
+
+--Оставляем только те элементы, для которых верен ХОТЯ БЫ один предикат
+filterMapOrMy :: [a -> Bool] -> [a] -> [a]
+filterMapOrMy predicates = filter (\x -> anyMy (\p -> p x) predicates)
+
+--Складываем все списки в Списке "столбиком"
+sumEqMy :: [[Int]] -> [Int]
+sumEqMy x = map sum (transpose x)  --Транспонируем матрицу, нулями он заполняет сам
+
+--Вторая версия (очень некрасивая) НЕ ДОДЕЛАЛ ДО КОНЦА!!!
+sumEqMy2 :: [[Int]] -> [[Int]]
+sumEqMy2 [] = []
+sumEqMy2 listofLists = map sumEqHelper listofLists where
+	maxLen = maximum (map length listofLists)
+	sumEqHelper sublist = sublist ++ replicate (maxLen - length sublist) 0
+
+--С ГЕНЕРАТОРОМ все пары чисел из списка такие, что х1 < х2
+funcWithGenerator :: [Integer] -> [(Integer, Integer)]
+funcWithGenerator xs = [(x, y) | x <- xs, y <- xs, x < y]
+
+--БЕЗ ГЕНЕРАТОРА все пары чисел из списка такие, что х1 < х2
+funcWithoutGenerator :: [Integer] -> [(Integer, Integer)]
+funcWithoutGenerator xs = concatMap (\x -> map (\y -> (x, y)) (filter (>x) xs)) xs -- В concatMap попадает х из списка, применяем map
+--к каждому y такому, что y > x

@@ -1,0 +1,101 @@
+import numpy as np
+from scipy import stats
+from prettytable import PrettyTable
+import random
+from matplotlib import pyplot as plt
+
+
+def union_frequency(arr):
+    while min([row[1] for row in arr]) <= 5:
+        for i in range(len(arr)-1, -1, -1):
+            if arr[i][1] <= 5 and i == 0:
+                arr[1][1] = arr[i][1] + arr[i + 1][1]
+                arr[1][2] = arr[i][2] + arr[i + 1][2]
+                arr[1][3] = arr[i][3] + arr[i + 1][3]
+                arr[1][4] = arr[1][3] ** 2
+                arr[1][5] = arr[1][4] / arr[1][2]
+                arr = arr[1:]
+            elif arr[i][1] <= 5:
+                arr[i-1][1] = arr[i-1][1] + arr[i][1]
+                arr[i-1][2] = arr[i-1][2] + arr[i-1][2]
+                arr[i-1][3] = arr[i-1][3] + arr[i][3]
+                arr[i-1][4] = arr[i-1][3] ** 2
+                arr[i-1][5] = arr[i-1][4] / arr[i-1][2]
+                arr = arr[:i] + arr[i + 1:]
+    return arr
+
+
+poisson_lambda = 4  # Лямбда для закона Пуассона (среднее количество успехов за определенный интервал)
+significance_level = 0.05  # Уровень значимости
+events_number = 20  # Число событий
+numb_of_experiments = 300  # Число экспериментов
+
+
+# Генерируем собственное распределение
+array = [0 for _ in range(events_number)]
+for _ in range(numb_of_experiments):
+    U = random.random()
+    p = np.exp(-poisson_lambda)
+    F = p
+    i = 0
+    while U > F:
+        p *= poisson_lambda / (i + 1)
+        F += p
+        i += 1
+    array[i] += 1  # Эксперимент закончен
+
+print("Сгенерированные случайные числа:\n", array)
+
+estimation_lambda = sum([i * array[i] for i in range(len(array))]) / numb_of_experiments
+print("Оценка параметра лямбда: ", estimation_lambda)
+
+
+# Вычисляем теоретические частоты
+theor_frequency = [numb_of_experiments * np.exp(-estimation_lambda) * (estimation_lambda ** i)
+                   / np.math.factorial(i) for i in range(events_number)]
+print("Теоретические частоты:\n", theor_frequency)
+
+# Разбиение на интервалы
+field_names = ["i", "ni(Частоты)", "ni'(Теор. частоты)", "ni -n'i", "(ni -n'i)^2", "X^2 наблюдаемое"]
+print_table = PrettyTable(field_names)
+
+
+matrix = a = [[0] * 6 for i in range(events_number)]  # Создаем двумерный список для удобного объединения событий
+
+
+#print("\n\n\nИсходная таблица до объединения малочисленных частот:")
+for i in range(events_number):
+    matrix[i][0] = i
+    matrix[i][1] = array[i]
+    matrix[i][2] = theor_frequency[i]
+    matrix[i][3] = matrix[i][1] - matrix[i][2]
+    matrix[i][4] = matrix[i][3] ** 2
+    matrix[i][5] = matrix[i][4] / matrix[i][2]
+print_table.add_rows(matrix)
+#print(print_table)
+
+
+matrix = union_frequency(matrix)
+
+for i in range(len(matrix)):                        #Для нормальной нумерации
+    matrix[i][0] = i
+
+print("\nТаблица после объединения малочисленных событий:")
+print_table = PrettyTable(field_names)
+print_table.add_rows(matrix)
+print(print_table)
+
+
+X_nab = sum([row[5] for row in matrix])
+X_kr = stats.chi2.ppf(1-significance_level, len(matrix) - 2)
+print("Хи критическое : ", X_kr)
+print("Хи наблюдаемое : ", X_nab)
+
+
+if X_nab < X_kr:
+    print("Т.к. Хи критическое > Хи наблюдаемого, принимаем гипотезу")
+else:
+    print("Т.к. Хи критическое < Хи наблюдаемого, отвергаем гипотезу")
+
+plt.bar([i for i in range(0, len(array))], array)
+plt.show()
