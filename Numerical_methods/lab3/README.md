@@ -55,4 +55,13 @@
 - и что при слишком мелкой сетке погрешность перестаёт уменьшаться красиво — начинают доминировать ошибки округления.
 
 
-## Скриншот
+## Скриншоты
+<img width="1506" height="476" alt="image" src="https://github.com/user-attachments/assets/dc710963-84cd-4260-bbeb-420494118380" />
+
+
+<img width="1032" height="638" alt="image" src="https://github.com/user-attachments/assets/8f58cbe4-2555-4a29-9e41-9ac00cfa0c45" />
+
+
+<img width="1043" height="434" alt="image" src="https://github.com/user-attachments/assets/a386657e-e1a9-458e-85b5-bd472488dc6e" />
+
+
