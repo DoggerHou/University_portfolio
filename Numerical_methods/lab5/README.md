@@ -55,4 +55,6 @@
 
 ## Скриншот
 
+<img width="1266" height="599" alt="image" src="https://github.com/user-attachments/assets/245bfbdc-0fc4-4f8e-bcf6-67507ea5957a" />
+
 
