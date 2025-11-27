@@ -81,4 +81,6 @@
 
 **Гистограмма + теоретическая кривая** 
 
+<img width="1076" height="421" alt="image" src="https://github.com/user-attachments/assets/2b7a0f92-dd72-4f99-bb86-341108a3b5e3" />
+
 
