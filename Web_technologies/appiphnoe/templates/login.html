@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="contacts">
+    <div class="container">
+        <div class="contacts-inner">
+            <form method="POST" class="contacts-form" action="/login">
+                <h2 class="contacts-title">Вход</h2>
+                <input type="text" name="loginField" id="typeLoginX" class="contacts-input" placeholder="Логин">
+                <input type="password" name="passField" id="typePasswordX" class="contacts-input" placeholder="Пароль">
+                <button id="sendbtnlog" type="submit"><b>Войти</b></button><br><br>
+                <a href="/register" id="login_link"><b>Зарегистрироваться</b></a>
+
+            </form>
+            <img src="static/img/contact.jpg" alt="iphone14contact">
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+
+{% block scriptjs %}
+<script src="static/js/script.js" defer></script>
+{% endblock %}
