@@ -197,5 +197,13 @@ python -m venv .venv
 
 pip install -r requirements.txt
 python main.py
+```
+---
 
+## Скриншоты
 
+**Страница цветов**
+<img width="1004" height="542" alt="image" src="https://github.com/user-attachments/assets/872f4b50-91a4-4c90-8d55-1956c0a8249c" />
+
+**Форма отправки данных по методу AJAX**
+<img width="940" height="739" alt="image" src="https://github.com/user-attachments/assets/8ccafaa9-d022-4079-af5f-a5d650ea376c" />
