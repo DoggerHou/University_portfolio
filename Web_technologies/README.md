@@ -36,7 +36,7 @@ web_app/
       css/            # стили
       js/             # скрипты (script.js, form-order.js, whatnew_animation.js, ...)
       img/            # изображения
-
+```
 
 
 ---
