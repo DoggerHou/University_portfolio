@@ -40,3 +40,8 @@
 
 
 ## Скриншоты
+
+<img width="1034" height="360" alt="image" src="https://github.com/user-attachments/assets/735efa2d-0387-4756-adcd-e1fb867798e4" />
+
+<img width="1034" height="239" alt="image" src="https://github.com/user-attachments/assets/f3954717-2949-4cc5-b48a-a215a2527430" />
+
