@@ -97,4 +97,11 @@
 ## Скриншоты:
 
 Приведем пример для проверки на экспоненциальное распределение:
+<img width="816" height="397" alt="image" src="https://github.com/user-attachments/assets/8805bf3f-52a4-4902-9cec-34e1e29bc42c" />
+
+<img width="1652" height="366" alt="image" src="https://github.com/user-attachments/assets/dc2200c0-be83-4e24-a55c-52f239949832" />
+
+<img width="936" height="617" alt="image" src="https://github.com/user-attachments/assets/ea76c31a-3b46-44f4-8d21-ec9e9aff6402" />
+
+
 
