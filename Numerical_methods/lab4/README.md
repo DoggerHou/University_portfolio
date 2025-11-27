@@ -49,3 +49,4 @@ Z(a) = Σ i^(-a),  i = 1..∞,  при a = 1.1.
 
 
 ## Скриншот
+<img width="1831" height="529" alt="image" src="https://github.com/user-attachments/assets/92492a53-dfc7-43ec-8228-f58ee5504a54" />
